@@ -20,6 +20,7 @@ public class PecaRepository {
         if (instance == null) {
             instance = new PecaRepository();
         }
+
         return instance;
     }
 
@@ -51,6 +52,7 @@ public class PecaRepository {
             return null;
         }
 
+        pecaExistente.setNome(dadosAtualizados.getNome());
         pecaExistente.setCodigoBarras(dadosAtualizados.getCodigoBarras());
         pecaExistente.setFornecedorMarca(dadosAtualizados.getFornecedorMarca());
         pecaExistente.setQuantidadeEstoque(dadosAtualizados.getQuantidadeEstoque());
