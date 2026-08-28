@@ -1,0 +1,311 @@
+{
+  "info": {
+    "_postman_id": "fa0afc90-7031-4f8e-a7ee-d25884d7be4b",
+    "name": "MecaniQA API - OAT 1 - Palmas",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53041832",
+    "_collection_link": "https://go.postman.co/collection/53041832-fa0afc90-7031-4f8e-a7ee-d25884d7be4b?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "US01 - Cadastrar Peça",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nome\": \"Pastilha de freio dianteira\",\r\n  \"codigoBarras\": \"7891234567890\",\r\n  \"fornecedorMarca\": \"Bosch\",\r\n  \"quantidadeEstoque\": 20,\r\n  \"precoCusto\": 50.0,\r\n  \"precoVenda\": 85.0,\r\n  \"tamanho\": null,\r\n  \"cor\": null,\r\n  \"categoria\": \"FREIOS\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/pecas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "pecas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "US02 - Listar Peças",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/pecas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "pecas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "US03 - Atualizar Peça",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nome\": \"Pastilha de freio premium\",\r\n  \"codigoBarras\": \"7891234567890\",\r\n  \"fornecedorMarca\": \"Bosch\",\r\n  \"quantidadeEstoque\": 30,\r\n  \"precoCusto\": 55.0,\r\n  \"precoVenda\": 95.0,\r\n  \"tamanho\": null,\r\n  \"cor\": null,\r\n  \"categoria\": \"FREIOS\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/pecas/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "pecas",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "US04 - Excluir Peça",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/pecas/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "pecas",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Teste - Peça inexistente (404)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/pecas/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "pecas",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "US05 - Cadastrar Serviço",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nome\": \"Troca de óleo\",\r\n  \"tempoEstimadoMinutos\": 45,\r\n  \"custoTabelado\": 120.0\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/servicos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "servicos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "US06 - Listar Serviços",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/servicos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "servicos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "US07 - Atualizar Serviço",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nome\": \"Troca de óleo completa\",\r\n  \"tempoEstimadoMinutos\": 60,\r\n  \"custoTabelado\": 150.0\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/servicos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "servicos",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "US08 - Excluir Serviço",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/servicos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "servicos",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Teste - Categoria obrigatória (400)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nome\": \"Filtro de óleo\",\r\n  \"codigoBarras\": \"7899876543210\",\r\n  \"fornecedorMarca\": \"Mann\",\r\n  \"quantidadeEstoque\": 10,\r\n  \"precoCusto\": 25.0,\r\n  \"precoVenda\": 45.0,\r\n  \"tamanho\": null,\r\n  \"cor\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/pecas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "pecas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Teste - Serviço inexistente (404)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/servicos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "servicos",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST - Teste - Nome obrigatório (400)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"codigoBarras\": \"7891111111111\",\r\n  \"fornecedorMarca\": \"Bosch\",\r\n  \"quantidadeEstoque\": 5,\r\n  \"precoCusto\": 40.0,\r\n  \"precoVenda\": 70.0,\r\n  \"tamanho\": null,\r\n  \"cor\": null,\r\n  \"categoria\": \"FREIOS\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/pecas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "pecas"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
