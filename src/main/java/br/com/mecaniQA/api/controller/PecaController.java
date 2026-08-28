@@ -18,6 +18,10 @@ public class PecaController {
     @PostMapping
     public ResponseEntity<Peca> cadastrar(@RequestBody Peca peca) {
 
+        if (peca.getNome() == null || peca.getNome().isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
         if (peca.getCategoria() == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -50,6 +54,10 @@ public class PecaController {
     public ResponseEntity<Peca> atualizar(
             @PathVariable Long codigo,
             @RequestBody Peca peca) {
+
+        if (peca.getNome() == null || peca.getNome().isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
 
         if (peca.getCategoria() == null) {
             return ResponseEntity.badRequest().build();
