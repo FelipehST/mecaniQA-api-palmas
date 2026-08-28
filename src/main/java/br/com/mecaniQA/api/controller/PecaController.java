@@ -17,8 +17,16 @@ public class PecaController {
 
     @PostMapping
     public ResponseEntity<Peca> cadastrar(@RequestBody Peca peca) {
+
+        if (peca.getCategoria() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
         Peca novaPeca = repository.salvar(peca);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novaPeca);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(novaPeca);
     }
 
     @GetMapping
@@ -28,6 +36,7 @@ public class PecaController {
 
     @GetMapping("/{codigo}")
     public ResponseEntity<Peca> buscar(@PathVariable Long codigo) {
+
         Peca peca = repository.buscarPorCodigo(codigo);
 
         if (peca == null) {
@@ -41,6 +50,10 @@ public class PecaController {
     public ResponseEntity<Peca> atualizar(
             @PathVariable Long codigo,
             @RequestBody Peca peca) {
+
+        if (peca.getCategoria() == null) {
+            return ResponseEntity.badRequest().build();
+        }
 
         Peca atualizada = repository.atualizar(codigo, peca);
 
