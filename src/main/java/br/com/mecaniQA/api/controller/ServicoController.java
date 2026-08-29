@@ -17,8 +17,16 @@ public class ServicoController {
 
     @PostMapping
     public ResponseEntity<Servico> cadastrar(@RequestBody Servico servico) {
+
+        if (!dadosObrigatoriosValidos(servico)) {
+            return ResponseEntity.badRequest().build();
+        }
+
         Servico novoServico = repository.salvar(servico);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoServico);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(novoServico);
     }
 
     @GetMapping
@@ -28,6 +36,7 @@ public class ServicoController {
 
     @GetMapping("/{codigo}")
     public ResponseEntity<Servico> buscar(@PathVariable Long codigo) {
+
         Servico servico = repository.buscarPorCodigo(codigo);
 
         if (servico == null) {
@@ -41,6 +50,10 @@ public class ServicoController {
     public ResponseEntity<Servico> atualizar(
             @PathVariable Long codigo,
             @RequestBody Servico servico) {
+
+        if (!dadosObrigatoriosValidos(servico)) {
+            return ResponseEntity.badRequest().build();
+        }
 
         Servico atualizado = repository.atualizar(codigo, servico);
 
@@ -61,5 +74,22 @@ public class ServicoController {
         }
 
         return ResponseEntity.noContent().build();
+    }
+
+    private boolean dadosObrigatoriosValidos(Servico servico) {
+
+        if (servico.getNome() == null || servico.getNome().isBlank()) {
+            return false;
+        }
+
+        if (servico.getTempoEstimadoMinutos() == null) {
+            return false;
+        }
+
+        if (servico.getCustoTabelado() == null) {
+            return false;
+        }
+
+        return true;
     }
 }
