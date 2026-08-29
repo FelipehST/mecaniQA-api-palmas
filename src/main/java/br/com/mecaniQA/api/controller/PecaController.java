@@ -18,11 +18,7 @@ public class PecaController {
     @PostMapping
     public ResponseEntity<Peca> cadastrar(@RequestBody Peca peca) {
 
-        if (peca.getNome() == null || peca.getNome().isBlank()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        if (peca.getCategoria() == null) {
+        if (!dadosObrigatoriosValidos(peca)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -55,11 +51,7 @@ public class PecaController {
             @PathVariable Long codigo,
             @RequestBody Peca peca) {
 
-        if (peca.getNome() == null || peca.getNome().isBlank()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        if (peca.getCategoria() == null) {
+        if (!dadosObrigatoriosValidos(peca)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -82,5 +74,38 @@ public class PecaController {
         }
 
         return ResponseEntity.noContent().build();
+    }
+
+    private boolean dadosObrigatoriosValidos(Peca peca) {
+
+        if (peca.getNome() == null || peca.getNome().isBlank()) {
+            return false;
+        }
+
+        if (peca.getCodigoBarras() == null || peca.getCodigoBarras().isBlank()) {
+            return false;
+        }
+
+        if (peca.getFornecedorMarca() == null || peca.getFornecedorMarca().isBlank()) {
+            return false;
+        }
+
+        if (peca.getQuantidadeEstoque() == null) {
+            return false;
+        }
+
+        if (peca.getPrecoCusto() == null) {
+            return false;
+        }
+
+        if (peca.getPrecoVenda() == null) {
+            return false;
+        }
+
+        if (peca.getCategoria() == null) {
+            return false;
+        }
+
+        return true;
     }
 }
