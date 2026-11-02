@@ -1,111 +1,77 @@
 package br.com.mecaniQA.api.controller;
 
 import br.com.mecaniQA.api.model.Peca;
-import br.com.mecaniQA.api.repository.PecaRepository;
-
+import br.com.mecaniQA.api.repository.exception.DadosInvalidosException;
+import br.com.mecaniQA.api.repository.exception.PecaNaoEncontradaException;
+import br.com.mecaniQA.api.service.PecaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/pecas")
 public class PecaController {
 
-    private final PecaRepository repository = PecaRepository.getInstance();
+    private final PecaService service;
+
+    public PecaController(PecaService service) {
+        this.service = service;
+    }
 
     @PostMapping
-    public ResponseEntity<Peca> cadastrar(@RequestBody Peca peca) {
-
-        if (!dadosObrigatoriosValidos(peca)) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<?> cadastrar(@RequestBody Peca peca) {
+        try {
+            Peca novaPeca = service.salvar(peca);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novaPeca);
+        } catch (DadosInvalidosException e) {
+            return ResponseEntity.badRequest().body(Map.of("erro", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("erro", "Erro interno no servidor"));
         }
-
-        Peca novaPeca = repository.salvar(peca);
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(novaPeca);
     }
 
     @GetMapping
     public ResponseEntity<List<Peca>> listar() {
-        return ResponseEntity.ok(repository.listarTodas());
+        return ResponseEntity.ok(service.listarTodas());
     }
 
     @GetMapping("/{codigo}")
-    public ResponseEntity<Peca> buscar(@PathVariable Long codigo) {
-
-        Peca peca = repository.buscarPorCodigo(codigo);
-
-        if (peca == null) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> buscar(@PathVariable Long codigo) {
+        try {
+            return ResponseEntity.ok(service.buscarPorCodigo(codigo));
+        } catch (PecaNaoEncontradaException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("erro", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("erro", "Erro interno no servidor"));
         }
-
-        return ResponseEntity.ok(peca);
     }
 
     @PutMapping("/{codigo}")
-    public ResponseEntity<Peca> atualizar(
-            @PathVariable Long codigo,
-            @RequestBody Peca peca) {
-
-        if (!dadosObrigatoriosValidos(peca)) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<?> atualizar(@PathVariable Long codigo, @RequestBody Peca peca) {
+        try {
+            Peca atualizada = service.atualizar(codigo, peca);
+            return ResponseEntity.ok(atualizada);
+        } catch (PecaNaoEncontradaException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("erro", e.getMessage()));
+        } catch (DadosInvalidosException e) {
+            return ResponseEntity.badRequest().body(Map.of("erro", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("erro", "Erro interno no servidor"));
         }
-
-        Peca atualizada = repository.atualizar(codigo, peca);
-
-        if (atualizada == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(atualizada);
     }
 
     @DeleteMapping("/{codigo}")
-    public ResponseEntity<Void> excluir(@PathVariable Long codigo) {
-
-        boolean excluida = repository.excluir(codigo);
-
-        if (!excluida) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> excluir(@PathVariable Long codigo) {
+        try {
+            service.excluir(codigo);
+            return ResponseEntity.noContent().build();
+        } catch (PecaNaoEncontradaException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("erro", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("erro", "Erro interno no servidor"));
         }
-
-        return ResponseEntity.noContent().build();
-    }
-
-    private boolean dadosObrigatoriosValidos(Peca peca) {
-
-        if (peca.getNome() == null || peca.getNome().isBlank()) {
-            return false;
-        }
-
-        if (peca.getCodigoBarras() == null || peca.getCodigoBarras().isBlank()) {
-            return false;
-        }
-
-        if (peca.getFornecedorMarca() == null || peca.getFornecedorMarca().isBlank()) {
-            return false;
-        }
-
-        if (peca.getQuantidadeEstoque() == null) {
-            return false;
-        }
-
-        if (peca.getPrecoCusto() == null) {
-            return false;
-        }
-
-        if (peca.getPrecoVenda() == null) {
-            return false;
-        }
-
-        if (peca.getCategoria() == null) {
-            return false;
-        }
-
-        return true;
     }
 }

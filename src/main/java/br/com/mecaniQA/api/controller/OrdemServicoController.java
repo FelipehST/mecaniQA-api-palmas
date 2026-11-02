@@ -2,71 +2,76 @@ package br.com.mecaniQA.api.controller;
 
 import br.com.mecaniQA.api.dto.OrdemServicoRequestDTO;
 import br.com.mecaniQA.api.dto.OrdemServicoResponseDTO;
-import br.com.mecaniQA.api.model.OrdemServico;
-import br.com.mecaniQA.api.model.OrdemServicoBuilder;
+import br.com.mecaniQA.api.repository.exception.DadosInvalidosException;
+import br.com.mecaniQA.api.service.OrdemServicoService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/ordens")
 public class OrdemServicoController {
 
-    private List<OrdemServico> bancoDados = new ArrayList<>();
-    private Long proximoId = 1L;
+    private final OrdemServicoService service;
+
+    public OrdemServicoController(OrdemServicoService service) {
+        this.service = service;
+    }
 
     @PostMapping
-    public OrdemServicoResponseDTO criar(@RequestBody OrdemServicoRequestDTO dto) {
-        OrdemServico os = new OrdemServicoBuilder()
-                .comDescricao(dto.getDescricaoProblema())
-                .comStatus(dto.getStatus())
-                .comValorTotal(0.0)
-                .build();
-
-        os.setId(proximoId++);
-        bancoDados.add(os);
-
-        return converterParaResponse(os);
+    public ResponseEntity<?> criar(@RequestBody OrdemServicoRequestDTO dto) {
+        try {
+            OrdemServicoResponseDTO response = service.criar(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (DadosInvalidosException e) {
+            return ResponseEntity.badRequest().body(Map.of("erro", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("erro", "Erro interno no servidor"));
+        }
     }
 
     @GetMapping
-    public List<OrdemServicoResponseDTO> listarTodas() {
-        List<OrdemServicoResponseDTO> lista = new ArrayList<>();
-        for (OrdemServico os : bancoDados) {
-            lista.add(converterParaResponse(os));
-        }
-        return lista;
+    public ResponseEntity<List<OrdemServicoResponseDTO>> listarTodas() {
+        return ResponseEntity.ok(service.listarTodas());
     }
 
     @GetMapping("/{id}")
-    public OrdemServicoResponseDTO buscarPorId(@PathVariable Long id) {
-        for (OrdemServico os : bancoDados) {
-            if (os.getId().equals(id)) {
-                return converterParaResponse(os);
-            }
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(service.buscarPorId(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("erro", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("erro", "Erro interno no servidor"));
         }
-        return null;
     }
 
     @PutMapping("/{id}")
-    public OrdemServicoResponseDTO atualizar(@PathVariable Long id, @RequestBody OrdemServicoRequestDTO dto) {
-        for (OrdemServico os : bancoDados) {
-            if (os.getId().equals(id)) {
-                os.setDescricaoProblema(dto.getDescricaoProblema());
-                os.setStatus(dto.getStatus());
-                return converterParaResponse(os);
-            }
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody OrdemServicoRequestDTO dto) {
+        try {
+            OrdemServicoResponseDTO response = service.atualizar(id, dto);
+            return ResponseEntity.ok(response);
+        } catch (DadosInvalidosException e) {
+            return ResponseEntity.badRequest().body(Map.of("erro", e.getMessage()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("erro", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("erro", "Erro interno no servidor"));
         }
-        return null;
     }
 
-    private OrdemServicoResponseDTO converterParaResponse(OrdemServico os) {
-        OrdemServicoResponseDTO response = new OrdemServicoResponseDTO();
-        response.setId(os.getId());
-        response.setDescricaoProblema(os.getDescricaoProblema());
-        response.setStatus(os.getStatus());
-        response.setValorTotal(os.getValorTotal());
-        return response;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> excluir(@PathVariable Long id) {
+        try {
+            service.excluir(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("erro", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("erro", "Erro interno no servidor"));
+        }
     }
 }
